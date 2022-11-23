@@ -1,3 +1,0 @@
-/mnt/d/Coding/Graphics/LearnOpenGL/src/C1_Getting_Started/glfw_start_wsl/build/CMakeFiles/edit_cache.dir
-/mnt/d/Coding/Graphics/LearnOpenGL/src/C1_Getting_Started/glfw_start_wsl/build/CMakeFiles/rebuild_cache.dir
-/mnt/d/Coding/Graphics/LearnOpenGL/src/C1_Getting_Started/glfw_start_wsl/build/CMakeFiles/glfw_start.dir

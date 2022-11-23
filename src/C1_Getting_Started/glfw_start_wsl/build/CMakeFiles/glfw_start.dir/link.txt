@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/glfw_start.dir/main.cpp.o CMakeFiles/glfw_start.dir/glad.c.o  -o glfw_start  -lglfw3 -lGL -lm -lXrandr -lXi -lX11 -lXxf86vm -lpthread -ldl -lXinerama -lXcursor 
