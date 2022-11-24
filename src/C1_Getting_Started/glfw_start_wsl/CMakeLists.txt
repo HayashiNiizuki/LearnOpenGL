@@ -1,11 +1,14 @@
-project(glfw_start)
+project(getting_start)
 
 cmake_minimum_required(VERSION 3.14)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES main.cpp glad.c)
+set(HELLO_WINDOW_SOURCE hello_window.cpp glad.c)
+add_executable(hello_window ${HELLO_WINDOW_SOURCE})
 
-add_executable(glfw_start ${SOURCE_FILES})
+set(HELLO_TRIANGLE_SOURCE hello_triangle.cpp glad.c)
+add_executable(hello_triangle ${HELLO_TRIANGLE_SOURCE})
 
-target_link_libraries(glfw_start glfw3 GL m Xrandr Xi X11 pthread dl Xinerama Xcursor)
+target_link_libraries(hello_window glfw3 GL m Xrandr Xi X11 pthread dl Xinerama Xcursor)
+target_link_libraries(hello_triangle glfw3 GL m Xrandr Xi X11 pthread dl Xinerama Xcursor)
