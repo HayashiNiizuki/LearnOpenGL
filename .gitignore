@@ -4,5 +4,5 @@
 
 src/C0/glfw-3.3.8/build
 src/C0/glfw-3.3.8/build_win
-src/C1_Getting_Started/glfw_start_wsl/build
-src/C1_Getting_Started/glfw_start/x64
+src/C1_Getting_Started/build
+src/C1_Getting_Started/build_win
