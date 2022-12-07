@@ -10,5 +10,5 @@ add_executable(hello_window ${HELLO_WINDOW_SOURCE})
 set(HELLO_TRIANGLE_SOURCE hello_triangle.cpp glad.c)
 add_executable(hello_triangle ${HELLO_TRIANGLE_SOURCE})
 
-target_link_libraries(hello_window glfw3 GL m Xrandr Xi X11 pthread dl Xinerama Xcursor)
-target_link_libraries(hello_triangle glfw3 GL m Xrandr Xi X11 pthread dl Xinerama Xcursor)
+target_link_libraries(hello_window glfw3 GL X11 pthread dl)
+target_link_libraries(hello_triangle glfw3 GL X11 pthread dl)
