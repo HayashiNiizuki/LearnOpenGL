@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
         // 1.9 place all the rendering commands in the render loop
 
         // check and call events and swap the buffers
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.4666666667f, 0.2f, 0.5529411765f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glfwPollEvents();
