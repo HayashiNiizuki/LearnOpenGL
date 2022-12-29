@@ -106,7 +106,7 @@ int main() {
 
     unsigned int indices[] = {  // note that we start from 0!
         0, 1, 2,   // first triangle
-        3, 4, 5    // second triangle
+        // 3, 4, 5    // second triangle
     };
 
     unsigned int VBO, VAO, EBO;
