@@ -13,3 +13,4 @@ add_library(lib_glad STATIC glad.c)
 
 add_subdirectory(03_Hello_Window)
 add_subdirectory(04_Hello_Triangle)
+add_subdirectory(05_Shaders)
