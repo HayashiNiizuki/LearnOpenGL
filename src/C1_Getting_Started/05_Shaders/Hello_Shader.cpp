@@ -12,6 +12,8 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 800;
 
+const float OFFSET = 0.25f;
+
 int main() {
     // glfw: initialize and configure
     // ------------------------------
@@ -59,7 +61,7 @@ int main() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     
-    Shader myShader("shader_files/shader.vs", "shader_files/shader.fs");
+    Shader myShader("./05_Shaders/shader_files/shader.vs", "./05_Shaders/shader_files/shader.fs");
 
     while (!glfwWindowShouldClose(window)) {
         // input
@@ -72,6 +74,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         myShader.use();
+        myShader.setFloat("offset", OFFSET);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
