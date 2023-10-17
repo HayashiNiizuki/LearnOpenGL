@@ -13,6 +13,7 @@
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 void processInput(GLFWwindow *window);
 
 // settings
@@ -29,6 +30,7 @@ float lastFrame = 0.0f; // Time of last frame
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
+bool leftMousePressed = false;
 
 //
 Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -57,6 +59,7 @@ int main() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -239,20 +242,36 @@ void mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
     float xpos = static_cast<float>(xposIn);
     float ypos = static_cast<float>(yposIn);
 
-    if (firstMouse)
-    {
+    if (firstMouse) {
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
     }
 
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+    if (leftMousePressed) {
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 
-    lastX = xpos;
-    lastY = ypos;
+        lastX = xpos;
+        lastY = ypos;
 
-    camera.ProcessMouseMovement(xoffset, yoffset);
+        camera.ProcessMouseMovement(xoffset, yoffset);
+    } else {
+        lastX = xpos;
+        lastY = ypos;
+    }
+}
+
+void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (action == GLFW_PRESS) {
+            // 鼠标左键被按下
+            leftMousePressed = true;
+        } else if (action == GLFW_RELEASE) {
+            // 鼠标左键被释放
+            leftMousePressed = false;
+        }
+    }
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
