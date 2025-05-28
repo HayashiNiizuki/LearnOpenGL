@@ -1,6 +1,6 @@
-project(getting_start)
-
 cmake_minimum_required(VERSION 3.14)
+
+project(getting_start)
 
 set(CMAKE_CXX_STANDARD 11)
 
