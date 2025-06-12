@@ -1,7 +1,7 @@
 set(
     SHADERS_SOURCE 
     Hello_Shader.cpp
-    Shader.h
+    Shader.cpp
 )
 add_executable(shaders ${SHADERS_SOURCE})
 
