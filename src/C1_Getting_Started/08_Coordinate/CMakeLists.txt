@@ -1,7 +1,7 @@
 set(
     COORDINATE_SOURCE 
     Coordinate.cpp  
-    Shader.h  
+    Shader.cpp
     preprocessor.h
     stb_image.h
 )

@@ -1,7 +1,7 @@
 set(
     TRANSFORMATIONS_SOURCE 
     Transformations.cpp  
-    Shader.h  
+    Shader.cpp  
     preprocessor.h
     stb_image.h
 )

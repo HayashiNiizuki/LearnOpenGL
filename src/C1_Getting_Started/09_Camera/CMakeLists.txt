@@ -2,7 +2,7 @@ set(
     CAMERA_SOURCE 
     ChapterCamera.cpp  
     Camera.h
-    Shader.h  
+    Shader.cpp
     preprocessor.h
     stb_image.h
 )
