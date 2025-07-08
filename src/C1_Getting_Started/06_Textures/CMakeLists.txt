@@ -1,7 +1,7 @@
 set(
     TEXTURES_SOURCE 
     Hello_Textures.cpp  
-    Shader.h  
+    Shader.cpp  
     preprocessor.h
     stb_image.h
 )
