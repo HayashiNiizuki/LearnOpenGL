@@ -1,6 +1,7 @@
 set(COLORS_SOURCE
     Shader.cpp
     Colors.cpp
+    Camera.cpp
 )
 
 add_executable(colors ${COLORS_SOURCE})
