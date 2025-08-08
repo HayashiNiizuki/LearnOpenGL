@@ -43,6 +43,13 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime) {
       break;
     case RIGHT:
       Position += Right * velocity;
+      break;
+    case UP:
+      Position += Up * velocity;
+      break;
+    case DOWN:
+      Position -= Up * velocity;
+      break;
     default:
       return;
   }

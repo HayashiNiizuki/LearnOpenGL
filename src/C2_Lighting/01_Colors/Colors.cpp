@@ -223,12 +223,16 @@ void processInput(GLFWwindow* window) {
   const float cameraSpeed = 2.5f * deltaTime;  // adjust accordingly
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     camera.ProcessKeyboard(Camera_Movement::FORWARD, deltaTime);
-  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+  else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     camera.ProcessKeyboard(Camera_Movement::BACKWARD, deltaTime);
-  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+  else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     camera.ProcessKeyboard(Camera_Movement::LEFT, deltaTime);
-  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+  else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     camera.ProcessKeyboard(Camera_Movement::RIGHT, deltaTime);
+  else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    camera.ProcessKeyboard(Camera_Movement::UP, deltaTime);
+  else if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
+    camera.ProcessKeyboard(Camera_Movement::DOWN, deltaTime);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
