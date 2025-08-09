@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "Shader.h"
 #include "preprocessor.h"
+#include "utils.h"
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -145,10 +146,12 @@ int main() {
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
 
-  Shader lightShader("./01_Colors/cube_shader/shader.vs",
-                     "./01_Colors/cube_shader/shader.fs");
-  Shader cubeShader("./01_Colors/lighting_shader/shader.vs",
-                    "./01_Colors/lighting_shader/shader.fs");
+  Shader cubeShader(
+      (exec_dir() / "cube_shader" / "shader.vs").string().c_str(),
+      (exec_dir() / "cube_shader" / "shader.fs").string().c_str());
+  Shader lightShader(
+      (exec_dir() / "lighting_shader" / "shader.vs").string().c_str(),
+      (exec_dir() / "lighting_shader" / "shader.fs").string().c_str());
 
   while (!glfwWindowShouldClose(window)) {
     // input
@@ -161,31 +164,31 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT |
             GL_DEPTH_BUFFER_BIT);  // also clear the depth buffer now!
 
-    lightShader.use();
-    lightShader.setVec3("objectColor", 36.0 / 255, 172.0 / 255, 242.0 / 255);
-    lightShader.setVec3("lightColor", 0.5f, 0.5f, 0.5f);
+    cubeShader.use();
+    cubeShader.setVec3("objectColor", 36.0 / 255, 172.0 / 255, 242.0 / 255);
+    cubeShader.setVec3("lightColor", 0.5f, 0.5f, 0.5f);
     // view/projection transformations
     glm::mat4 projection =
         glm::perspective(glm::radians(camera.Zoom),
                          (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = camera.GetViewMatrix();
-    lightShader.setMat4("projection", projection);
-    lightShader.setMat4("view", view);
+    cubeShader.setMat4("projection", projection);
+    cubeShader.setMat4("view", view);
 
     // world transformation
     glm::mat4 model = glm::mat4(1.0f);
-    lightShader.setMat4("model", model);
+    cubeShader.setMat4("model", model);
 
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
-    cubeShader.use();
-    cubeShader.setMat4("projection", projection);
-    cubeShader.setMat4("view", view);
+    lightShader.use();
+    lightShader.setMat4("projection", projection);
+    lightShader.setMat4("view", view);
     model = glm::mat4(1.0f);
     model = glm::translate(model, lightPos);
     model = glm::scale(model, glm::vec3(0.1f));  // a smaller cube
-    cubeShader.setMat4("model", model);
+    lightShader.setMat4("model", model);
 
     glBindVertexArray(lightVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
