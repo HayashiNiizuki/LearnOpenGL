@@ -168,10 +168,15 @@ int main() {
             GL_DEPTH_BUFFER_BIT);  // also clear the depth buffer now!
 
     cubeShader.use();
-    cubeShader.setVec3("material.ambient", 0.25f,	0.20725f,	0.20725f);
-    cubeShader.setVec3("material.diffuse", 1.f,	0.829f,	0.829f);
-    cubeShader.setVec3("material.specular", 0.296648f,	0.296648f,	0.296648f);
-    cubeShader.setFloat("material.shininess", 32.0f*0.088);
+    // object material
+    cubeShader.setVec3("material.ambient", 0.24725,	0.1995,	0.0745);
+    cubeShader.setVec3("material.diffuse", 0.75164,	0.60648,	0.22648);
+    cubeShader.setVec3("material.specular", 0.628281,	0.555802,	0.366065);
+    cubeShader.setFloat("material.shininess", 128.f*0.4);
+    // light properties
+    cubeShader.setVec3("light.ambient",  1.f, 1.f, 1.f);
+    cubeShader.setVec3("light.diffuse",  1.f, 1.f, 1.f); // darken diffuse light a bit
+    cubeShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f); 
     // cubeShader.setVec3("objectColor", 36.0 / 255, 172.0 / 255, 242.0 / 255);
     cubeShader.setVec3("lightColor", 0.95f, 0.95f, 0.95f);
     cubeShader.setVec3("lightPos", lightPos);
