@@ -16,7 +16,7 @@ void mouse_callback(GLFWwindow*, double, double);
 void scroll_callback(GLFWwindow*, double, double);
 void mouse_button_callback(GLFWwindow*, int, int, int);
 void processInput(GLFWwindow* window);
-unsigned int loadTexture(const char *path);
+unsigned int loadTexture(const char* path);
 
 // settings
 // settings
@@ -120,6 +120,19 @@ int main() {
     -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
     -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
   };
+  // positions all containers
+  glm::vec3 cubePositions[] = {
+    glm::vec3( 0.0f,  0.0f,  0.0f),
+    glm::vec3( 2.0f,  5.0f, -15.0f),
+    glm::vec3(-1.5f, -2.2f, -2.5f),
+    glm::vec3(-3.8f, -2.0f, -12.3f),
+    glm::vec3( 2.4f, -0.4f, -3.5f),
+    glm::vec3(-1.7f,  3.0f, -7.5f),
+    glm::vec3( 1.3f, -2.0f, -2.5f),
+    glm::vec3( 1.5f,  2.0f, -2.5f),
+    glm::vec3( 1.5f,  0.2f, -1.5f),
+    glm::vec3(-1.3f,  1.0f, -1.5f)
+  };
   // clang-format on
   unsigned int VBO;
   glGenBuffers(1, &VBO);
@@ -148,10 +161,12 @@ int main() {
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
   // 法线属性
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                        (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
   // 纹理坐标属性
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                        (void*)(6 * sizeof(float)));
   glEnableVertexAttribArray(2);
 
   Shader cubeShader(
@@ -161,12 +176,14 @@ int main() {
       (exec_dir() / "lighting_shader" / "shader.vs").string().c_str(),
       (exec_dir() / "lighting_shader" / "shader.fs").string().c_str());
 
-  unsigned int diffuseMap = loadTexture((exec_dir() / "container2.png").string().c_str());
-  unsigned int specularMap = loadTexture((exec_dir() / "container2_specular.png").string().c_str());
+  unsigned int diffuseMap =
+      loadTexture((exec_dir() / "container2.png").string().c_str());
+  unsigned int specularMap =
+      loadTexture((exec_dir() / "container2_specular.png").string().c_str());
   cubeShader.use();
   cubeShader.setInt("material.diffuse", 0);
   cubeShader.setInt("material.specular", 1);
-  
+
   while (!glfwWindowShouldClose(window)) {
     // input
     // -----
@@ -185,10 +202,11 @@ int main() {
     cubeShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
     cubeShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
     cubeShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+    cubeShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
     // cubeShader.setVec3("objectColor", 36.0 / 255, 172.0 / 255, 242.0 / 255);
     // cubeShader.setVec3("lightColor", 0.95f, 0.95f, 0.95f);
     cubeShader.setVec3("lightPos", lightPos);
-    cubeShader.setVec3("viewPos", camera.Position); 
+    cubeShader.setVec3("viewPos", camera.Position);
     // view/projection transformations
     glm::mat4 projection =
         glm::perspective(glm::radians(camera.Zoom),
@@ -196,24 +214,34 @@ int main() {
     glm::mat4 view = camera.GetViewMatrix();
     cubeShader.setMat4("projection", projection);
     cubeShader.setMat4("view", view);
-    
+
     // world transformation
-    glm::mat4 model = glm::mat4(1.0f);
-    cubeShader.setMat4("model", model);
-    
+    // glm::mat4 model = glm::mat4(1.0f);
+    // cubeShader.setMat4("model", model);
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, diffuseMap);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, specularMap);
-    
+
     glBindVertexArray(cubeVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    for (unsigned int i = 0; i < 10; i++) {
+      // calculate the model matrix for each object and pass it to shader before drawing
+      glm::mat4 model = glm::mat4(1.0f);
+      model = glm::translate(model, cubePositions[i]);
+      float angle = 20.0f * i;
+      model =
+          glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+      cubeShader.setMat4("model", model);
+
+      glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
     lightShader.use();
     lightShader.setVec3("lightColor", 0.95f, 0.95f, 0.95f);
     lightShader.setMat4("projection", projection);
     lightShader.setMat4("view", view);
-    model = glm::mat4(1.0f);
+    glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, lightPos);
     model = glm::scale(model, glm::vec3(0.1f));  // a smaller cube
     lightShader.setMat4("model", model);
@@ -320,39 +348,37 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 
 // utility function for loading a 2D texture from file
 // ---------------------------------------------------
-unsigned int loadTexture(char const * path)
-{
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-    
-    int width, height, nrComponents;
-    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
-    if (data)
-    {
-        GLenum format;
-        if (nrComponents == 1)
-            format = GL_RED;
-        else if (nrComponents == 3)
-            format = GL_RGB;
-        else if (nrComponents == 4)
-            format = GL_RGBA;
+unsigned int loadTexture(char const* path) {
+  unsigned int textureID;
+  glGenTextures(1, &textureID);
 
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+  int width, height, nrComponents;
+  unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
+  if (data) {
+    GLenum format;
+    if (nrComponents == 1)
+      format = GL_RED;
+    else if (nrComponents == 3)
+      format = GL_RGB;
+    else if (nrComponents == 4)
+      format = GL_RGBA;
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
+                 GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
 
-        stbi_image_free(data);
-    }
-    else
-    {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
-        stbi_image_free(data);
-    }
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    return textureID;
+    stbi_image_free(data);
+  } else {
+    std::cout << "Texture failed to load at path: " << path << std::endl;
+    stbi_image_free(data);
+  }
+
+  return textureID;
 }
