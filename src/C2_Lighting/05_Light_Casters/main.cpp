@@ -211,6 +211,7 @@ int main() {
     cubeShader.setVec3("light.position",  camera.Position);
     cubeShader.setVec3("light.direction", camera.Front);
     cubeShader.setFloat("light.cutOff",   glm::cos(glm::radians(12.5f)));
+    cubeShader.setFloat("light.outerCutOff",   glm::cos(glm::radians(17.5f)));
     cubeShader.setVec3("viewPos", camera.Position);
     // view/projection transformations
     glm::mat4 projection =
