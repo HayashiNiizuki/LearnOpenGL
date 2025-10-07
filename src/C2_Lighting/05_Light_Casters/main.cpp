@@ -208,7 +208,9 @@ int main() {
     // cubeShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
     // cubeShader.setVec3("objectColor", 36.0 / 255, 172.0 / 255, 242.0 / 255);
     // cubeShader.setVec3("lightColor", 0.95f, 0.95f, 0.95f);
-    cubeShader.setVec3("light.position", lightPos);
+    cubeShader.setVec3("light.position",  camera.Position);
+    cubeShader.setVec3("light.direction", camera.Front);
+    cubeShader.setFloat("light.cutOff",   glm::cos(glm::radians(12.5f)));
     cubeShader.setVec3("viewPos", camera.Position);
     // view/projection transformations
     glm::mat4 projection =
