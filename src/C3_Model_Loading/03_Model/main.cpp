@@ -4,6 +4,10 @@
 #include "preprocessor.h"
 #include "utils.h"
 
+#include "imgui/backends/imgui_impl_glfw.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
+#include "imgui/imgui.h"
+
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -67,6 +71,21 @@ int main() {
     return -1;
   }
 
+  // 初始化 ImGui
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGuiIO& io = ImGui::GetIO();
+
+  ImFont* my_font = io.Fonts->AddFontFromFileTTF((exec_dir() / "resources" / "NotoSansSC-Medium.otf").c_str(), 30.0f);
+  io.FontDefault = my_font;
+
+  // 设置样式
+  ImGui::StyleColorsDark();
+
+  // 初始化平台/渲染器后端
+  ImGui_ImplGlfw_InitForOpenGL(window, true);
+  ImGui_ImplOpenGL3_Init("#version 330");
+
   // configure global opengl state
   // -----------------------------
   glEnable(GL_DEPTH_TEST);
@@ -74,6 +93,9 @@ int main() {
   Shader ourShader((exec_dir() / "model_loading" / "shader.vs").string().c_str(),
                    (exec_dir() / "model_loading" / "shader.fs").string().c_str());
   Model ourModel((exec_dir() / "resources" / "backpack.obj").string());
+
+  char location_x[12], location_y[12], location_z[12];
+  char viewport_x[12], viewport_y[12], viewport_z[12];
 
   while (!glfwWindowShouldClose(window)) {
     // per-frame time logic
@@ -104,6 +126,64 @@ int main() {
     model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));      // it's a bit too big for our scene, so scale it down
     ourShader.setMat4("model", model);
     ourModel.Draw(ourShader);
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::Begin("CAMERA");
+    ImGui::Text("Camera Location");
+
+    std::snprintf(location_x, sizeof(location_x), "%.4f", camera.Position.x);
+    std::snprintf(location_y, sizeof(location_y), "%.4f", camera.Position.y);
+    std::snprintf(location_z, sizeof(location_z), "%.4f", camera.Position.z);
+
+    ImGui::Text("x");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(80.0f);
+    ImGui::InputText("##x", location_x, IM_COUNTOF(location_x), ImGuiInputTextFlags_ReadOnly);
+
+    ImGui::SameLine();
+    ImGui::Text("y");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(80.0f);
+    ImGui::InputText("##y", location_y, IM_COUNTOF(location_y), ImGuiInputTextFlags_ReadOnly);
+
+    ImGui::SameLine();
+    ImGui::Text("z");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(80.0f);
+    ImGui::InputText("##z", location_z, IM_COUNTOF(location_z), ImGuiInputTextFlags_ReadOnly);
+
+    ImGui::Text("Camera Viewport");
+
+    std::snprintf(viewport_x, sizeof(viewport_x), "%.4f", camera.Front.x);
+    std::snprintf(viewport_y, sizeof(viewport_y), "%.4f", camera.Front.y);
+    std::snprintf(viewport_z, sizeof(viewport_z), "%.4f", camera.Front.z);
+
+    ImGui::Text("x");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(80.0f);
+    ImGui::InputText("##x", viewport_x, IM_COUNTOF(viewport_x), ImGuiInputTextFlags_ReadOnly);
+
+    ImGui::SameLine();
+    ImGui::Text("y");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(80.0f);
+    ImGui::InputText("##y", viewport_y, IM_COUNTOF(viewport_y), ImGuiInputTextFlags_ReadOnly);
+
+    ImGui::SameLine();
+    ImGui::Text("z");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(80.0f);
+    ImGui::InputText("##z", viewport_z, IM_COUNTOF(viewport_z), ImGuiInputTextFlags_ReadOnly);
+
+    ImGui::End();
+
+    // 渲染
+    ImGui::Render();
+
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     // -------------------------------------------------------------------------------
@@ -152,6 +232,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
+  ImGuiIO& io = ImGui::GetIO();
+  if (io.WantCaptureMouse) {
+    return;
+  }
+
   float xpos = static_cast<float>(xposIn);
   float ypos = static_cast<float>(yposIn);
 
