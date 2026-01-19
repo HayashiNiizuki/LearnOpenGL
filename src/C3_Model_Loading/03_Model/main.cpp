@@ -141,19 +141,19 @@ int main() {
     ImGui::Text("x");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(80.0f);
-    ImGui::InputText("##x", location_x, IM_COUNTOF(location_x), ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputText("##location_x", location_x, IM_COUNTOF(location_x), ImGuiInputTextFlags_ReadOnly);
 
     ImGui::SameLine();
     ImGui::Text("y");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(80.0f);
-    ImGui::InputText("##y", location_y, IM_COUNTOF(location_y), ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputText("##location_y", location_y, IM_COUNTOF(location_y), ImGuiInputTextFlags_ReadOnly);
 
     ImGui::SameLine();
     ImGui::Text("z");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(80.0f);
-    ImGui::InputText("##z", location_z, IM_COUNTOF(location_z), ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputText("##location_z", location_z, IM_COUNTOF(location_z), ImGuiInputTextFlags_ReadOnly);
 
     ImGui::Text("Camera Viewport");
 
@@ -164,19 +164,19 @@ int main() {
     ImGui::Text("x");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(80.0f);
-    ImGui::InputText("##x", viewport_x, IM_COUNTOF(viewport_x), ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputText("##viewport_x", viewport_x, IM_COUNTOF(viewport_x), ImGuiInputTextFlags_ReadOnly);
 
     ImGui::SameLine();
     ImGui::Text("y");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(80.0f);
-    ImGui::InputText("##y", viewport_y, IM_COUNTOF(viewport_y), ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputText("##viewport_y", viewport_y, IM_COUNTOF(viewport_y), ImGuiInputTextFlags_ReadOnly);
 
     ImGui::SameLine();
     ImGui::Text("z");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(80.0f);
-    ImGui::InputText("##z", viewport_z, IM_COUNTOF(viewport_z), ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputText("##viewport_z", viewport_z, IM_COUNTOF(viewport_z), ImGuiInputTextFlags_ReadOnly);
 
     ImGui::End();
 
