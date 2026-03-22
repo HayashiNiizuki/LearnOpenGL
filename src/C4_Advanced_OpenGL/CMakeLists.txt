@@ -30,3 +30,4 @@ target_include_directories(imgui PUBLIC
 add_library(lib_glad STATIC glad.c)
 
 add_subdirectory(01_Depth_testing)
+add_subdirectory(02_Stencil_testing)
