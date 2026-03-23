@@ -14,8 +14,8 @@ add_executable(stencil_testing ${SOURCE})
 
 add_custom_command(TARGET stencil_testing POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/model_loading
-    $<TARGET_FILE_DIR:stencil_testing>/model_loading
+    ${CMAKE_CURRENT_SOURCE_DIR}/shaders
+    $<TARGET_FILE_DIR:stencil_testing>/shaders
 )
 
 add_custom_command(TARGET stencil_testing POST_BUILD
