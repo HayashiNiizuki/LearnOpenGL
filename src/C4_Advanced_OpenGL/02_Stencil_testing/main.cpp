@@ -160,6 +160,10 @@ int main() {
   // configure global opengl state
   // -----------------------------
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_STENCIL_TEST);
+
+  glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+  glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
   unsigned int VBO;
   glGenBuffers(1, &VBO);
@@ -196,6 +200,7 @@ int main() {
 
   Shader cubeShader((exec_dir() / "shaders" / "cube_shader" / "shader.vs").string().c_str(), (exec_dir() / "shaders" / "cube_shader" / "shader.fs").string().c_str());
   Shader lightShader((exec_dir() / "shaders" / "lighting_shader" / "shader.vs").string().c_str(), (exec_dir() / "shaders" / "lighting_shader" / "shader.fs").string().c_str());
+  Shader shaderSingleColor((exec_dir() / "shaders" / "single_color_shader" / "shader.vs").string().c_str(), (exec_dir() / "shaders" / "single_color_shader" / "shader.fs").string().c_str());
 
   unsigned int diffuseMap = loadTexture((exec_dir() / "resources" / "container2.png").string().c_str());
   unsigned int specularMap = loadTexture((exec_dir() / "resources" / "container2_specular.png").string().c_str());
@@ -215,7 +220,7 @@ int main() {
     processInput(window);
 
     glClearColor(0.05f, 0.05f, 0.05f, 0.05f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // also clear the depth buffer now!
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);  // also clear the depth buffer now!
 
     cubeShader.use();
     // object material
@@ -289,6 +294,9 @@ int main() {
     for (unsigned int i = 0; i < 10; i++) {
       // calculate the model matrix for each object and pass it to shader before
       // drawing
+      glStencilFunc(GL_ALWAYS, 1, 0xFF);
+      glStencilMask(0xFF);
+
       glm::mat4 model = glm::mat4(1.0f);
       model = glm::translate(model, cubePositions[i]);
       float angle = 20.0f * i;
@@ -297,6 +305,37 @@ int main() {
 
       glDrawArrays(GL_TRIANGLES, 0, 36);
     }
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, diffuseMap);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, specularMap);
+
+    glBindVertexArray(cubeVAO);
+
+    shaderSingleColor.use();
+    for (unsigned int i = 0; i < 10; i++) {
+      // calculate the model matrix for each object and pass it to shader before
+      // drawing
+      glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+      glStencilMask(0x00);
+
+      float scale = 1.05f;
+
+      glm::mat4 model = glm::mat4(1.0f);
+      model = glm::translate(model, cubePositions[i]);
+      float angle = 20.0f * i;
+      model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+      model = glm::scale(model, glm::vec3(scale, scale, scale));
+      shaderSingleColor.setMat4("projection", projection);
+      shaderSingleColor.setMat4("view", view);
+      shaderSingleColor.setMat4("model", model);
+
+      glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+    glStencilMask(0xFF);
+    glStencilFunc(GL_ALWAYS, 0, 0xFF);
 
     lightShader.use();
     lightShader.setVec3("lightColor", 0.95f, 0.95f, 0.95f);
