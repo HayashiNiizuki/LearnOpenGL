@@ -27,7 +27,7 @@ const unsigned int SCR_WIDTH = 1600;
 const unsigned int SCR_HEIGHT = 900;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -20.0f);
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -82,66 +82,60 @@ int main() {
   // clang-format off
   float verticles[] = {
     // floor
-    552.8,   0.0,   0.0,
-      0.0,   0.0,   0.0,
-      0.0,   0.0, 559.2,
-    549.6,   0.0, 559.2,
-    556.0, 548.8,   0.0,
-    556.0, 548.8, 559.2,
-      0.0, 548.8, 559.2,
-      0.0, 548.8,   0.0,
-    549.6,   0.0, 559.2,
-      0.0,   0.0, 559.2,
-      0.0, 548.8, 559.2,
-    556.0, 548.8, 559.2,
+    0.5, 0.0, 0.0, // 0
+    0.0, 0.0, 0.0, // 1
+    0.0, 0.0, 0.5, // 2
+    0.5, 0.0, 0.5, // 3
+    0.5, 0.5, 0.0, // 4
+    0.5, 0.5, 0.5, // 5
+    0.0, 0.5, 0.5, // 6
+    0.0, 0.5, 0.0, // 7
   };
 
-  int fragments[] = {
+  int floorFragments[] = {
     // floor
-     1,  2,  3,
-     3,  4,  1,
-     5,  6,  7,
-     7,  8,  5,
-     9, 10, 11,
-    11, 12,  9,
-    // left
-     1,  3,  6,
-     1,  6,  5,
-    // right
-     1,  3,  6,
-     1,  6,  5,
+    0, 1, 2,
+    2, 3, 0,
+    4, 5, 6,
+    6, 7, 4,
+    3, 2, 6,
+    6, 5, 3,
   };
+  int leftFragments[] = {
+    // left
+     0, 3, 5,
+     0, 5, 4,
+  };
+  int rightFragments[] = {
+    // right
+     2, 1, 7,
+     2, 7, 6,
+  };
+
+  int *fragments[] = {floorFragments, leftFragments, rightFragments};
+  int fragmentSizes[] = {sizeof(floorFragments), sizeof(leftFragments), sizeof(rightFragments)};
   // clang-format on
 
-  for (int i = 0; i < sizeof(fragments) / sizeof(fragments[0]); i++) {
-    fragments[i]--;
-  }
-  
-  for (int i = 0; i < sizeof(verticles) / sizeof(verticles[0]); i++) {
-    verticles[i] /= 1000.0f;
-    verticles[i] -= 0.25f;
-  }
-
-  unsigned int planeVAOs, planeVBOs, planeEBOs;
-  glGenVertexArrays(1, &planeVAOs);
+  unsigned int planeVAOs[3], planeVBOs, planeEBOs[3];
+  glGenVertexArrays(3, planeVAOs);
   glGenBuffers(1, &planeVBOs);
-  glGenBuffers(1, &planeEBOs);
-
-  glBindVertexArray(planeVAOs);
+  glGenBuffers(3, planeEBOs);
 
   glBindBuffer(GL_ARRAY_BUFFER, planeVBOs);
   glBufferData(GL_ARRAY_BUFFER, sizeof(verticles), verticles, GL_STATIC_DRAW);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBOs);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(fragments), fragments, GL_STATIC_DRAW);
+  for (int i = 0; i < 3; i++) {
+    glBindVertexArray(planeVAOs[i]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBOs[i]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, fragmentSizes[i], fragments[i], GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+  }
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-  glEnableVertexAttribArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-
   glBindVertexArray(0);
 
-  Shader shader((exec_dir() / "shaders" / "base" / "shader.vs").string().c_str(), (exec_dir() / "shaders" / "base" / "shader.fs").string().c_str());
+  Shader shader((exec_dir() / "shaders" / "singleColor" / "shader.vs").string().c_str(), (exec_dir() / "shaders" / "singleColor" / "shader.fs").string().c_str());
 
   while (!glfwWindowShouldClose(window)) {
     // input
@@ -153,19 +147,29 @@ int main() {
 
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
     glm::mat4 view = camera.GetViewMatrix();
-
     glm::mat4 model = glm::mat4(1.0f);
-
-    // model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
+    model = glm::rotate(model, 3.14f, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::translate(model, glm::vec3(0.0f, -0.5f, 0.0f));
 
     shader.use();
     shader.setMat4("model", model);
     shader.setMat4("view", view);
     shader.setMat4("projection", projection);
 
-    glBindVertexArray(planeVAOs);
-
+    glBindVertexArray(planeVAOs[0]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBOs[0]);
+    shader.setVec3("color", 192. / 255., 167. / 255., 139. / 255.);
     glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(planeVAOs[1]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBOs[1]);
+    shader.setVec3("color", 1., 0., 0.);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(planeVAOs[2]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBOs[2]);
+    shader.setVec3("color", 0., 1., 0.);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved
     // etc.)
