@@ -1,18 +1,19 @@
-#include "Camera.h"
-#include "Model.h"
-#include "Shader.h"
-#include "preprocessor.h"
-#include "utils.h"
+#include <cstddef>
+#include <iostream>
+
+#include <glad/glad.h>
 
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <iostream>
+#include "Camera.h"
+#include "Shader.h"
+#include "preprocessor.h"
+#include "utils.h"
 
 void framebuffer_size_callback(GLFWwindow*, int, int);
 void mouse_callback(GLFWwindow*, double, double);
@@ -77,46 +78,95 @@ int main() {
   }
 
   glEnable(GL_DEPTH_TEST);
+
+  // clang-format off
+  float verticles[] = {
+    // floor
+    552.8,   0.0,   0.0,
+      0.0,   0.0,   0.0,
+      0.0,   0.0, 559.2,
+    549.6,   0.0, 559.2,
+    556.0, 548.8,   0.0,
+    556.0, 548.8, 559.2,
+      0.0, 548.8, 559.2,
+      0.0, 548.8,   0.0,
+    549.6,   0.0, 559.2,
+      0.0,   0.0, 559.2,
+      0.0, 548.8, 559.2,
+    556.0, 548.8, 559.2,
+  };
+
+  int fragments[] = {
+    // floor
+     1,  2,  3,
+     3,  4,  1,
+     5,  6,  7,
+     7,  8,  5,
+     9, 10, 11,
+    11, 12,  9,
+    // left
+     1,  3,  6,
+     1,  6,  5,
+    // right
+     1,  3,  6,
+     1,  6,  5,
+  };
+  // clang-format on
+
+  for (int i = 0; i < sizeof(fragments) / sizeof(fragments[0]); i++) {
+    fragments[i]--;
+  }
   
-  
-  Shader shader((exec_dir() / "shaders" / "models" / "shader.vs").string().c_str(), (exec_dir() / "shaders" / "models" / "shader.fs").string().c_str());
-  
-  stbi_set_flip_vertically_on_load(false);
-  Model wooden_table((exec_dir() / "resources" / "wooden_table" / "scene.gltf").string());
-  Model books((exec_dir() / "resources" / "books" / "scene.gltf").string());
+  for (int i = 0; i < sizeof(verticles) / sizeof(verticles[0]); i++) {
+    verticles[i] /= 1000.0f;
+    verticles[i] -= 0.25f;
+  }
+
+  unsigned int planeVAOs, planeVBOs, planeEBOs;
+  glGenVertexArrays(1, &planeVAOs);
+  glGenBuffers(1, &planeVBOs);
+  glGenBuffers(1, &planeEBOs);
+
+  glBindVertexArray(planeVAOs);
+
+  glBindBuffer(GL_ARRAY_BUFFER, planeVBOs);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(verticles), verticles, GL_STATIC_DRAW);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBOs);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(fragments), fragments, GL_STATIC_DRAW);
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  glBindVertexArray(0);
+
+  Shader shader((exec_dir() / "shaders" / "base" / "shader.vs").string().c_str(), (exec_dir() / "shaders" / "base" / "shader.fs").string().c_str());
 
   while (!glfwWindowShouldClose(window)) {
     // input
     // -----
     processInput(window);
 
-    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    shader.use();
-
-    // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
     glm::mat4 view = camera.GetViewMatrix();
-    shader.setMat4("projection", projection);
-    shader.setMat4("view", view);
 
-    // table model
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, -50.0f, -80.0f));
-    model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-    // model = glm::rotate(model, 3.14f, glm::vec3(0.0f, 0.1f, 0.0f));
+
+    // model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
+
+    shader.use();
     shader.setMat4("model", model);
-    wooden_table.Draw(shader);
-    
-    // books model
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-10.0f, -10.0f, -80.0f));
-    model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));
-    // model = glm::rotate(model, 3.14f, glm::vec3(0.0f, 0.1f, 0.0f));
-    shader.setMat4("model", model);
-    books.Draw(shader);
-    
+    shader.setMat4("view", view);
+    shader.setMat4("projection", projection);
+
+    glBindVertexArray(planeVAOs);
+
+    glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
+
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved
     // etc.)
     // -------------------------------------------------------------------------------
@@ -204,41 +254,4 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-  camera.ProcessMouseScroll(static_cast<float>(yoffset));
-}
-
-// utility function for loading a 2D texture from file
-// ---------------------------------------------------
-unsigned int loadTexture(char const* path) {
-  unsigned int textureID;
-  glGenTextures(1, &textureID);
-
-  int width, height, nrComponents;
-  unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
-  if (data) {
-    GLenum format;
-    if (nrComponents == 1)
-      format = GL_RED;
-    else if (nrComponents == 3)
-      format = GL_RGB;
-    else if (nrComponents == 4)
-      format = GL_RGBA;
-
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    stbi_image_free(data);
-  } else {
-    std::cout << "Texture failed to load at path: " << path << std::endl;
-    stbi_image_free(data);
-  }
-
-  return textureID;
-}
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {}

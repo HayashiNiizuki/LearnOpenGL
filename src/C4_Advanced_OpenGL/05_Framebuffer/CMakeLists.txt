@@ -4,8 +4,6 @@ find_package(assimp REQUIRED)
 
 set(SOURCE
     main.cpp
-    Mesh.cpp
-    Model.cpp
     Shader.cpp
     Camera.cpp
 )
