@@ -179,17 +179,21 @@ int main() {
     triShader.setVec3("lightPos", 0.f, 0.49999f, 0.f);
     triShader.setVec3("lightColor", 1.f, 1.0f, 1.f);
     triShader.setVec3("viewPos", camera.Position);
+    triShader.setVec3("material.ambient", glm::vec3(0.05, 0.05, 0.05));
+    triShader.setVec3("material.diffuse", glm::vec3(0.55, 0.55, 0.55));
+    triShader.setVec3("material.specular", glm::vec3(0.7, 0.7, 0.7));
+    triShader.setFloat("material.shininess", 32.0f);
 
     glBindVertexArray(planeVAOs[0]);
-    triShader.setVec3("objColor", 192. / 255., 167. / 255., 139. / 255.);
+    triShader.setVec3("objColor", 0.725, 0.71, 0.68);
     glDrawArrays(GL_TRIANGLES, 0, 18);
 
     glBindVertexArray(planeVAOs[1]);
-    triShader.setVec3("objColor", 1., 0., 0.);
+    triShader.setVec3("objColor", 0.63, 0.065, 0.05);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glBindVertexArray(planeVAOs[2]);
-    triShader.setVec3("objColor", 0., 1., 0.);
+    triShader.setVec3("objColor", 0.14, 0.45, 0.091);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     lightShader.use();
