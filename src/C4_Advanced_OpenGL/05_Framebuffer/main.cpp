@@ -78,51 +78,44 @@ int main() {
 
   // clang-format off
   float floorVertices[] = {
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f,  1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f,  1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f,  1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f,  1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f,  1.0f,
 
-    // -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-    //  0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-    //  0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-    //  0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-    // -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-    // -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
 
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+    -0.5f,  0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, -1.0f,  0.0f
   };
 
   float rightVerticles[] = {
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
   };
-
+  
   float leftVerticles[] = {
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
   };
 
   float lightVerticles[] = {
@@ -183,17 +176,20 @@ int main() {
     triShader.setMat4("model", model);
     triShader.setMat4("view", view);
     triShader.setMat4("projection", projection);
+    triShader.setVec3("lightPos", 0.f, 0.49999f, 0.f);
+    triShader.setVec3("lightColor", 1.f, 1.0f, 1.f);
+    triShader.setVec3("viewPos", camera.Position);
 
     glBindVertexArray(planeVAOs[0]);
-    triShader.setVec3("color", 192. / 255., 167. / 255., 139. / 255.);
+    triShader.setVec3("objColor", 192. / 255., 167. / 255., 139. / 255.);
     glDrawArrays(GL_TRIANGLES, 0, 18);
 
     glBindVertexArray(planeVAOs[1]);
-    triShader.setVec3("color", 1., 0., 0.);
+    triShader.setVec3("objColor", 1., 0., 0.);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glBindVertexArray(planeVAOs[2]);
-    triShader.setVec3("color", 0., 1., 0.);
+    triShader.setVec3("objColor", 0., 1., 0.);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     lightShader.use();
@@ -202,7 +198,7 @@ int main() {
     lightShader.setMat4("projection", projection);
 
     glBindVertexArray(lightVAO);
-    lightShader.setVec3("color", 1., 1., 1.);
+    lightShader.setVec3("objColor", 1., 1., 1.);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved
