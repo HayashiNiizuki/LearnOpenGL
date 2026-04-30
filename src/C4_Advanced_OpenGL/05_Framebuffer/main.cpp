@@ -27,7 +27,7 @@ const unsigned int SCR_WIDTH = 900;
 const unsigned int SCR_HEIGHT = 900;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 1.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 2.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -36,9 +36,6 @@ bool leftMousePressed = false;
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-
-// lighting
-glm::vec3 lightPos(0.6f, 0.4f, 1.0f);
 
 int main() {
   // glfw: initialize and configure
@@ -80,62 +77,95 @@ int main() {
   glEnable(GL_DEPTH_TEST);
 
   // clang-format off
-  float verticles[] = {
-    // floor
-    0.5, 0.0, 0.0, // 0
-    0.0, 0.0, 0.0, // 1
-    0.0, 0.0, 0.5, // 2
-    0.5, 0.0, 0.5, // 3
-    0.5, 0.5, 0.0, // 4
-    0.5, 0.5, 0.5, // 5
-    0.0, 0.5, 0.5, // 6
-    0.0, 0.5, 0.0, // 7
+  float floorVertices[] = {
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+    // -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    //  0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    //  0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    //  0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    // -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    // -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
   };
 
-  int floorFragments[] = {
-    // floor
-    0, 1, 2,
-    2, 3, 0,
-    4, 5, 6,
-    6, 7, 4,
-    3, 2, 6,
-    6, 5, 3,
-  };
-  int leftFragments[] = {
-    // left
-     0, 3, 5,
-     0, 5, 4,
-  };
-  int rightFragments[] = {
-    // right
-     2, 1, 7,
-     2, 7, 6,
+  float rightVerticles[] = {
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
   };
 
-  int *fragments[] = {floorFragments, leftFragments, rightFragments};
-  int fragmentSizes[] = {sizeof(floorFragments), sizeof(leftFragments), sizeof(rightFragments)};
+  float leftVerticles[] = {
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+  };
+
+  float lightVerticles[] = {
+    -0.25f, 0.49999f, -0.25f,  0.0f, -1.0f,  0.0f,
+     0.25f, 0.49999f, -0.25f,  0.0f, -1.0f,  0.0f,
+     0.25f, 0.49999f,  0.25f,  0.0f, -1.0f,  0.0f,
+     0.25f, 0.49999f,  0.25f,  0.0f, -1.0f,  0.0f,
+    -0.25f, 0.49999f,  0.25f,  0.0f, -1.0f,  0.0f,
+    -0.25f, 0.49999f, -0.25f,  0.0f, -1.0f,  0.0f,
+  };
+
+  float *vertexBufferData[] = {floorVertices, leftVerticles, rightVerticles};
+  unsigned int vertexSize[] = {sizeof(floorVertices), sizeof(leftVerticles), sizeof(rightVerticles)};
   // clang-format on
 
-  unsigned int planeVAOs[3], planeVBOs, planeEBOs[3];
+  unsigned int planeVAOs[3], planeVBOs[3];
   glGenVertexArrays(3, planeVAOs);
-  glGenBuffers(1, &planeVBOs);
-  glGenBuffers(3, planeEBOs);
-
-  glBindBuffer(GL_ARRAY_BUFFER, planeVBOs);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(verticles), verticles, GL_STATIC_DRAW);
+  glGenBuffers(3, planeVBOs);
 
   for (int i = 0; i < 3; i++) {
     glBindVertexArray(planeVAOs[i]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBOs[i]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, fragmentSizes[i], fragments[i], GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, planeVBOs[i]);
+    glBufferData(GL_ARRAY_BUFFER, vertexSize[i], vertexBufferData[i], GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
   }
 
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
+  unsigned int lightVAO, lightVBO;
+  glGenVertexArrays(1, &lightVAO);
+  glGenBuffers(1, &lightVBO);
 
-  Shader shader((exec_dir() / "shaders" / "singleColor" / "shader.vs").string().c_str(), (exec_dir() / "shaders" / "singleColor" / "shader.fs").string().c_str());
+  glBindVertexArray(lightVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(lightVerticles), lightVerticles, GL_STATIC_DRAW);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+  glEnableVertexAttribArray(1);
+
+  Shader triShader((exec_dir() / "shaders" / "normalTri" / "shader.vs").string().c_str(), (exec_dir() / "shaders" / "normalTri" / "shader.fs").string().c_str());
+  Shader lightShader((exec_dir() / "shaders" / "light" / "shader.vs").string().c_str(), (exec_dir() / "shaders" / "light" / "shader.fs").string().c_str());
 
   while (!glfwWindowShouldClose(window)) {
     // input
@@ -148,28 +178,32 @@ int main() {
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
     glm::mat4 view = camera.GetViewMatrix();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, 3.14f, glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::translate(model, glm::vec3(-0.25f, -0.25f, 0.0f));
 
-    shader.use();
-    shader.setMat4("model", model);
-    shader.setMat4("view", view);
-    shader.setMat4("projection", projection);
+    triShader.use();
+    triShader.setMat4("model", model);
+    triShader.setMat4("view", view);
+    triShader.setMat4("projection", projection);
 
     glBindVertexArray(planeVAOs[0]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBOs[0]);
-    shader.setVec3("color", 192. / 255., 167. / 255., 139. / 255.);
-    glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
+    triShader.setVec3("color", 192. / 255., 167. / 255., 139. / 255.);
+    glDrawArrays(GL_TRIANGLES, 0, 18);
 
     glBindVertexArray(planeVAOs[1]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBOs[1]);
-    shader.setVec3("color", 1., 0., 0.);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    triShader.setVec3("color", 1., 0., 0.);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glBindVertexArray(planeVAOs[2]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBOs[2]);
-    shader.setVec3("color", 0., 1., 0.);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    triShader.setVec3("color", 0., 1., 0.);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    lightShader.use();
+    lightShader.setMat4("model", model);
+    lightShader.setMat4("view", view);
+    lightShader.setMat4("projection", projection);
+
+    glBindVertexArray(lightVAO);
+    lightShader.setVec3("color", 1., 1., 1.);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved
     // etc.)
