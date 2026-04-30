@@ -23,11 +23,11 @@ void processInput(GLFWwindow* window);
 unsigned int loadTexture(const char* path);
 
 // settings
-const unsigned int SCR_WIDTH = 1600;
+const unsigned int SCR_WIDTH = 900;
 const unsigned int SCR_HEIGHT = 900;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 1.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -149,7 +149,7 @@ int main() {
     glm::mat4 view = camera.GetViewMatrix();
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::rotate(model, 3.14f, glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::translate(model, glm::vec3(0.0f, -0.5f, 0.0f));
+    model = glm::translate(model, glm::vec3(-0.25f, -0.25f, 0.0f));
 
     shader.use();
     shader.setMat4("model", model);
