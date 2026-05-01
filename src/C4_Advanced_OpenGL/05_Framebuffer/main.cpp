@@ -23,11 +23,11 @@ void processInput(GLFWwindow* window);
 unsigned int loadTexture(const char* path);
 
 // settings
-const unsigned int SCR_WIDTH = 900;
-const unsigned int SCR_HEIGHT = 900;
+const unsigned int SCR_WIDTH = 1400;
+const unsigned int SCR_HEIGHT = 1400;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 2.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 1.8f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
