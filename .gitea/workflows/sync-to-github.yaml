@@ -1,0 +1,28 @@
+name: Sync to GitHub
+
+on:
+  push:
+    branches:
+      - '**'
+      - '**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (Full history include branches and tags)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to GitHub
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          GITHUB_USER="HayashiNiizuki"
+          GITHUB_REPO="LearnOpenGL"
+
+          git remote add github "https://${GITHUB_USER}:${GH_TOKEN}@github.com/${GITHUB_USER}/${GITHUB_REPO}.git"
+
+          git push github --all
+          git push github --tags
